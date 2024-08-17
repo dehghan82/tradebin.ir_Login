@@ -24,5 +24,13 @@ describe("template spec", () => {
     cy.get('button[type="submit"]').contains("ورود").click();
 
     cy.wait("@profile").its("response.statusCode").should("eq", 200);
+    cy.url().should("contain", "/market");
+    cy.get("a#profile").click();
+    cy.contains("a", "خروج").click();
+    cy.url().should("contain", "/");
+    cy.get('div[data-id="b6e2d08"] span.username').should(
+      "contain",
+      users.username_user.full_name
+    );
   });
 });
