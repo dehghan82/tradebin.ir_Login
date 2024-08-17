@@ -1,0 +1,23 @@
+{
+  "name": "tradebin.ir_login",
+  "version": "1.0.0",
+  "description": "e2e test for tradebin.ir login scenario",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cy:open":"cypress open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dehghan82/tradebin.ir_Login.git"
+  },
+  "author": "dehghan82",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dehghan82/tradebin.ir_Login/issues"
+  },
+  "homepage": "https://github.com/dehghan82/tradebin.ir_Login#readme",
+  "devDependencies": {
+    "cypress": "^13.13.3"
+  }
+}
