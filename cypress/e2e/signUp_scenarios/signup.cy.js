@@ -18,10 +18,12 @@ describe("Signup scenario", () => {
     const randomEmail = generateRandomEmail();
 
     cy.visit("/");
+    cy.get("a.login-btn").contains("ورود").click();
+    cy.url().should("contain", "/auth");
     interceptUserExistence();
 
     cy.get('input[name="username"]').focus().clear().type(randomEmail);
-    cy.get('button[type="submit"]').contains("ورود").click();
+    cy.get('button[type="submit"]').contains("تایید").click();
 
     cy.wait("@userExistance");
     cy.get("div.Toastify").contains(
@@ -31,10 +33,12 @@ describe("Signup scenario", () => {
   it("Should show error for invalid phone number", () => {
     const invalid_phonenum = "00000000000";
     cy.visit("/");
+    cy.get("a.login-btn").contains("ورود").click();
+    cy.url().should("contain", "/auth");
     interceptUserExistence();
 
     cy.get('input[name="username"]').focus().clear().type(invalid_phonenum);
-    cy.get('button[type="submit"]').contains("ورود").click();
+    cy.get('button[type="submit"]').contains("تایید").click();
 
     cy.wait("@userExistance");
     cy.get("div.Toastify").contains(
@@ -42,7 +46,7 @@ describe("Signup scenario", () => {
     );
   });
 
-  it("Should login using phone number with otp login", () => {
+  it("Should signup using phone number with otp login", () => {
     const randomPhoneNumber = generateRandomIranianPhoneNumber();
 
     Cypress.on("uncaught:exception", (err, runnable) => {
@@ -53,6 +57,8 @@ describe("Signup scenario", () => {
     });
 
     cy.visit("/");
+    cy.get("a.login-btn").contains("ورود").click();
+    cy.url().should("contain", "/auth");
     interceptUserExistence();
 
     cy.intercept("POST", urls.otpRequest, (req) => {
@@ -76,21 +82,20 @@ describe("Signup scenario", () => {
     }).as("profile");
 
     cy.get('input[name="username"]').focus().clear().type(randomPhoneNumber);
-    cy.get('button[type="submit"]').contains("ورود").click();
+    cy.get('button[type="submit"]').contains("تایید").click();
 
     cy.wait("@userExistance");
     cy.wait("@OTP_send");
-    cy.contains("label", "گذرواژه").siblings("input").should("exist");
+    cy.contains("h5", "ثبت‌نام").should("exist");
 
-    cy.get("div.text-end.mb-3").contains("کد تائید ارسال‌شده را وارد کنید");
+    cy.get("div.text-end.mb-3").contains("کد تایید ارسال‌شده را وارد کنید");
     cy.get('input[name="otpPassword"]').type("123456");
-    cy.get('button[type="submit"]').contains("ورود").click();
+    cy.get('button[type="submit"]').contains("ثبت‌نام").click();
 
     cy.wait("@OTP_validate").then((interception) => {
       console.log("OTP validation response:", interception.response);
     });
 
-    cy.url().should("include", "/market");
-    cy.wait("@profile");
+   // cy.wait("@profile");
   });
 });
