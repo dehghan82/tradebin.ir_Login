@@ -30,11 +30,11 @@ export const urls = {
     const randomNumber = Math.floor(Math.random() * 10000000).toString().padStart(7, '0');
     return randomPrefix + randomNumber;
   }
-  export const interceptRequests_secondOTP=()=>{
+  export const interceptRequests_secondOTP=(user_exist,pass_status)=>{
     cy.intercept("GET", urls.userExists, (req) => {
       req.continue((res) => {
-        expect(res.body).to.have.property("user_exists", true);
-        expect(res.body).to.have.property("user_has_password", false);
+        expect(res.body).to.have.property("user_exists", user_exist);
+        expect(res.body).to.have.property("user_has_password", pass_status);
       });
     }).as("userExistance");
   
@@ -60,11 +60,11 @@ export const urls = {
    
   }
   
-  export const interceptRequests_firstOTP = () => {
+  export const interceptRequests_firstOTP = (user_exist,pass_status) => {
     cy.intercept("GET", urls.userExists, (req) => {
       req.continue((res) => {
-        expect(res.body).to.have.property("user_exists", true);
-        expect(res.body).to.have.property("user_has_password", false);
+        expect(res.body).to.have.property("user_exists", user_exist);
+        expect(res.body).to.have.property("user_has_password", pass_status);
       });
     }).as("userExistance");
   

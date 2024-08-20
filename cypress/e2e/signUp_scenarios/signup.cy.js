@@ -5,6 +5,8 @@ import {
 } from "./test_data";
 
 describe("Signup scenario", () => {
+  const visit_tradebin = "/";
+  const visit_blog = "/blog";
   function interceptUserExistence() {
     cy.intercept("GET", urls.userExists, (req) => {
       req.continue((res) => {
@@ -13,40 +15,21 @@ describe("Signup scenario", () => {
       });
     }).as("userExistance");
   }
-
-  it("Should ban the user from logging in with email", () => {
-    const randomEmail = generateRandomEmail();
-
-    cy.visit("/");
+  function signupErrors(signup_type, visit_page) {
+    cy.visit(visit_page);
     cy.get("a.login-btn").contains("ورود").click();
     cy.url().should("contain", "/auth");
     interceptUserExistence();
 
-    cy.get('input[name="username"]').focus().clear().type(randomEmail);
+    cy.get('input[name="username"]').focus().clear().type(signup_type);
     cy.get('button[type="submit"]').contains("تایید").click();
 
     cy.wait("@userExistance");
     cy.get("div.Toastify").contains(
       "حساب کاربری با مشخصات وارد شده وجود ندارد. لطفا از شماره تلفن همراه برای ساخت حساب کاربری استفاده نمایید."
     );
-  });
-  it("Should show error for invalid phone number", () => {
-    const invalid_phonenum = "00000000000";
-    cy.visit("/");
-    cy.get("a.login-btn").contains("ورود").click();
-    cy.url().should("contain", "/auth");
-    interceptUserExistence();
-
-    cy.get('input[name="username"]').focus().clear().type(invalid_phonenum);
-    cy.get('button[type="submit"]').contains("تایید").click();
-
-    cy.wait("@userExistance");
-    cy.get("div.Toastify").contains(
-      "حساب کاربری با مشخصات وارد شده وجود ندارد. لطفا از شماره تلفن همراه برای ساخت حساب کاربری استفاده نمایید."
-    );
-  });
-
-  it("Should signup using phone number with otp login", () => {
+  }
+  function otpSignup(visit_page) {
     const randomPhoneNumber = generateRandomIranianPhoneNumber();
 
     Cypress.on("uncaught:exception", (err, runnable) => {
@@ -56,7 +39,7 @@ describe("Signup scenario", () => {
       return true;
     });
 
-    cy.visit("/");
+    cy.visit(visit_page);
     cy.get("a.login-btn").contains("ورود").click();
     cy.url().should("contain", "/auth");
     interceptUserExistence();
@@ -95,7 +78,29 @@ describe("Signup scenario", () => {
     cy.wait("@OTP_validate").then((interception) => {
       console.log("OTP validation response:", interception.response);
     });
+  }
 
-   // cy.wait("@profile");
+  it("Should ban the user from logging in with email in tradebin", () => {
+    const randomEmail = generateRandomEmail();
+    signupErrors(randomEmail, visit_tradebin);
+  });
+  it("Should show error for invalid phone number in tradebin", () => {
+    const invalid_phonenum = "00000000000";
+    signupErrors(invalid_phonenum, visit_tradebin);
+  });
+
+  it("Should signup using phone number with otp login in tradebin", () => {
+    otpSignup(visit_tradebin);
+  });
+  it("Should ban the user from logging in with email in tradebin blog", () => {
+    const randomEmail = generateRandomEmail();
+    signupErrors(randomEmail, visit_blog);
+  });
+  it("Should show error for invalid phone number in tradebin", () => {
+    const invalid_phonenum = "00000000000";
+    signupErrors(invalid_phonenum, visit_blog);
+  });
+  it("Should signup using phone number with otp login in tradebin blog", () => {
+    otpSignup(visit_blog);
   });
 });

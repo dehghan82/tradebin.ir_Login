@@ -48,8 +48,8 @@ export const interceptOtpRequest = () => {
   }).as("OTP_send");
 };
 
-export const login = (username, password) => {
-  cy.visit("/");
+export const login = (username, password,visit_page) => {
+  cy.visit(visit_page);
   cy.get("a.login-btn").contains("ورود").click();
   cy.url().should("contain", "/auth");
 
@@ -73,8 +73,8 @@ export const login = (username, password) => {
   cy.get("div.Toastify").contains("گذرواژه اشتباه است");
 };
 
-export const loginWithOtp = (username) => {
-  cy.visit("/");
+export const loginWithOtp = (username,visit_page) => {
+  cy.visit(visit_page);
 
   interceptUserExists();
   interceptOtpRequest();

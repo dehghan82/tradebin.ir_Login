@@ -1,9 +1,7 @@
 import { interceptProfile, interceptUserExists,handleUncaughtException,interceptOtpRequest, users } from "./utils";
 
 describe("template spec", () => {
-  // beforeEach(() => {
-    
-  // });
+ 
   const visit_tradebin="/";
   const visit_blog="/blog";
   function performPassLogin(user_data , password ,full_name ,visit_option){
